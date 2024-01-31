@@ -1,0 +1,16 @@
+img{
+    width: 200px;
+}
+
+.container-game{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(200px, 2fr));
+    gap: 1rem;
+}
+
+.card {
+    border: solid blue 1px;
+}
+.hidden img{
+    visibility: hidden;
+}
