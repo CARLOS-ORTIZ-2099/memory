@@ -14,3 +14,7 @@ img{
 .hidden img{
     visibility: hidden;
 }
+
+.hidden-btn{
+    display: none;
+}

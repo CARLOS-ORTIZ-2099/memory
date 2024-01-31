@@ -1,66 +1,144 @@
+import {images} from './helpers/images.js' 
+const tiempoContainer = document.querySelector('.tiempo-container')
 const containerGame = document.querySelector('.container-game')
-const ids = []
+const btnCompetition = document.querySelector('.btn-competition')
+const btnWinner = document.querySelector('.btn-winner')
+const btnPlay = document.querySelector('.btn-play')
+
+const peers = []
 const acc = []
+const dataPlayers = []
 let cards
-const images = [{id :1, at: 'a', src :'./images/aorus.JPG', description : 'some description'},
-{id :1,at: 'b', src :'./images/aorus.JPG', description : 'some description'},
-{id :2, at: 'c',src :'./images/centellaAORUS.jpg', description : 'some description'},
-{id :2,at: 'd' ,src :'./images/centellaAORUS.jpg', description : 'some description'},
-{id :3,at: 'e' ,src :'./images/cuarto-aorus.JPG', description : 'some description'},
-{id :3, at: 'e' ,src :'./images/cuarto-aorus.JPG', description : 'some description'}
-
-]
-
+let TiempoDeJuego = 0;
+let intervalo;
+let answer
 
 function randomPosition() {
     return Math.random() - 0.5
 }
 
-document.addEventListener('DOMContentLoaded', (e) => {
-    let info = ''
-    images.sort(randomPosition)
-    images.forEach((image) => {
-        info+= `
-            <div data-at = ${image.at}  id = ${image.id} class ='card hidden' >
-                <h1>${image.id}</h1>
-                <img class ='hidden' src=${image.src} alt="">
-            </div>
-        `
-    })
-    containerGame.innerHTML = info
-    cards = document.querySelectorAll('.card')
-    cards.forEach((card, index) => {
-        card.addEventListener('click',(e) =>  eventCard(e,index))
-    })
-})
+document.addEventListener('DOMContentLoaded', render )
+// primero a ejecutar
+function render() {
+    acc.splice(0, acc.length)
+    btnPlay.classList.add('hidden-btn')
+        let info = ''
+        images.sort(randomPosition)
+        images.forEach((image) => {
+            info+= `
+                <div data-at = ${image.at}  id = ${image.id} class ='card hidden' >
+                    <img class ='hidden' src=${image.src} alt="">
+                </div>
+            `
+        })
+        containerGame.innerHTML = info
+        cards = document.querySelectorAll('.card')
+        cards.forEach((card, index) => {
+            card.addEventListener('click',(e) =>  eventCard(e,index))
+        })
+}
 
 
 function eventCard(e, index) {
-    if(ids.some((ele) => ele.index == index) || acc.some((ele) => ele.id === e.target.id)){
+    if(peers.some((ele) => ele.index == index) || acc.some((ele) => ele.index === index)){
         return
     }
-    ids.push({id : e.target.id, index})
-    console.log(ids);
+    if(peers.length >=2){
+        return
+    }
+    peers.push({id : e.target.id, index})
+    console.log(peers);
     const bol = e.target.classList.contains('hidden')
     bol? e.target.classList.remove('hidden') : ''
 
-    if(ids.length === 2){
+    if(peers.length === 2){
         test()
+        acc.length === images.length ? eventReset() : ''
     }
 }
 
 function test() {
-    if(ids[0].id == ids[1].id ){
-        alert('son iguales')
-        acc.push(ids[0], ids[1])
+    console.log(acc);
+    if(peers[0].id == peers[1].id ){
+       // alert('son iguales')
+        acc.push(peers[0], peers[1])
         console.log(acc);
-        ids.splice(0, ids.length)
+        peers.splice(0, peers.length)
     }else{
-        console.log(ids);
-        cards[ids[0].index].classList.add('hidden')
-        cards[ids[1].index].classList.add('hidden')
-        ids.splice(0, ids.length)
+        console.log(peers);
+        setTimeout(() => {
+            cards[peers[0].index].classList.add('hidden')
+            cards[peers[1].index].classList.add('hidden')
+            peers.splice(0, peers.length)
+        }, 1000)
     }
 
+}
+
+function eventReset(){
+    alert('has acabado el juego')
+    btnPlay.classList.remove('hidden-btn')
+    dataPlayers.length < answer ? btnPlay.textContent = 'next player' : ''
+    btnPlay.addEventListener('click', render)
+    dataPlayers.push({id:new Date().getTime(), time :TiempoDeJuego })
+    clearInterval(intervalo)
+    TiempoDeJuego = 0
+    console.log(dataPlayers);
+    if(dataPlayers.length === answer){
+        result()
+    }
+}
+
+// segundo a ejecutar
+btnCompetition.addEventListener('click', (e) => {
+    answer = parseFloat(prompt('cuantos competiran? minimo 2 maximo 10'))
+    console.log(answer);
+    while(answer < 2 || answer > 10){
+      answer =  parseFloat( prompt('elige un numero permitido'))
+    }
+    btnPlay.classList.remove('hidden-btn')
+})
+
+// tercero a ejecutar
+btnPlay.addEventListener('click', (e) => {
+    intervalo = setInterval(() => {
+        TiempoDeJuego++;
+  
+        const horas = Math.floor(TiempoDeJuego / 3600);
+  
+        const minuto = Math.floor((TiempoDeJuego / 60) % 60);
+  
+        const segundos = Math.floor(TiempoDeJuego % 60);
+  
+        tiempoContainer.textContent = `${horas}H ${minuto}M ${segundos}S`;
+        tiempoContainer.style.fontSize = "2em";
+        tiempoContainer.style.color = "cyan";
+      }, 1000);
+      btnPlay.classList.add('hidden-btn')
+})
+
+function result() {
+    alert('ha acabado')
+    btnPlay.classList.add('hidden-btn')
+    btnWinner.classList.remove('hidden-btn')
+    btnWinner.addEventListener('click', winner)
+}
+
+
+function winner() {
+    // determinando el ganador mediante selectionSort
+    for(let i = 0; i < dataPlayers.length; i++){
+        let minIndex = i
+        for(let j = i+1; j < dataPlayers.length; j++){
+            if(dataPlayers[minIndex].time > dataPlayers[j].time){
+                minIndex = j
+            } 
+        }
+        let tempo = dataPlayers[i]
+        dataPlayers[i] = dataPlayers[minIndex]
+        dataPlayers[minIndex] = tempo
+    }
+console.log(dataPlayers);
+alert(`ha ganado ${dataPlayers[0].id}`)
 }
 
