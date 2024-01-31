@@ -2,8 +2,10 @@ import {images} from './helpers/images.js'
 const tiempoContainer = document.querySelector('.tiempo-container')
 const containerGame = document.querySelector('.container-game')
 const btnCompetition = document.querySelector('.btn-competition')
+const  btnCompetitionCancel = document.querySelector('.btn-competition-cancel')
 const btnWinner = document.querySelector('.btn-winner')
 const btnPlay = document.querySelector('.btn-play')
+btnCompetitionCancel.disabled = true
 
 const peers = []
 const acc = []
@@ -27,7 +29,7 @@ function render() {
         images.forEach((image) => {
             info+= `
                 <div data-at = ${image.at}  id = ${image.id} class ='card hidden' >
-                    <img class ='hidden' src=${image.src} alt="">
+                    <img class ='' src=${image.src} alt="">
                 </div>
             `
         })
@@ -58,7 +60,6 @@ function eventCard(e, index) {
 }
 
 function test() {
-    console.log(acc);
     if(peers[0].id == peers[1].id ){
        // alert('son iguales')
         acc.push(peers[0], peers[1])
@@ -77,12 +78,14 @@ function test() {
 
 function eventReset(){
     alert('has acabado el juego')
-    btnPlay.classList.remove('hidden-btn')
-    dataPlayers.length < answer ? btnPlay.textContent = 'next player' : ''
-    btnPlay.addEventListener('click', render)
-    dataPlayers.push({id:new Date().getTime(), time :TiempoDeJuego })
     clearInterval(intervalo)
+    btnPlay.classList.remove('hidden-btn')
+    dataPlayers.length < answer ? btnPlay.textContent = 'next player' : 'play'
+    dataPlayers.push({id:dataPlayers.length+1, time :TiempoDeJuego })
     TiempoDeJuego = 0
+    btnPlay.addEventListener('click', render)
+   
+
     console.log(dataPlayers);
     if(dataPlayers.length === answer){
         result()
@@ -97,10 +100,15 @@ btnCompetition.addEventListener('click', (e) => {
       answer =  parseFloat( prompt('elige un numero permitido'))
     }
     btnPlay.classList.remove('hidden-btn')
+    btnPlay.textContent =  'play'
+    btnCompetition.disabled = true
+    btnCompetitionCancel.disabled = false
+    btnWinner.classList.add('hidden-btn')
 })
 
 // tercero a ejecutar
 btnPlay.addEventListener('click', (e) => {
+    console.log('entro');
     intervalo = setInterval(() => {
         TiempoDeJuego++;
   
@@ -122,6 +130,8 @@ function result() {
     btnPlay.classList.add('hidden-btn')
     btnWinner.classList.remove('hidden-btn')
     btnWinner.addEventListener('click', winner)
+    /* btnCompetition.disabled = false */
+    btnCompetitionCancel.disabled = true
 }
 
 
@@ -138,7 +148,11 @@ function winner() {
         dataPlayers[i] = dataPlayers[minIndex]
         dataPlayers[minIndex] = tempo
     }
-console.log(dataPlayers);
-alert(`ha ganado ${dataPlayers[0].id}`)
+    console.log(dataPlayers);
+    alert(`ha ganado el jugador ${dataPlayers[0].id}`)
+    btnWinner.classList.add('hidden-btn')
+    btnCompetition.disabled = false
+    dataPlayers.splice(0, dataPlayers.length)
 }
+
 
