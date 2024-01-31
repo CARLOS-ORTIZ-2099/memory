@@ -18,3 +18,19 @@ img{
 .hidden-btn{
     display: none;
 }
+.capa{
+    width: 100%;
+    top: 0;
+    bottom: 0%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, .7);
+    z-index: 999;
+}
+.newCapa {
+    width: 100%;
+    
+    bottom: 0;
+    position: absolute;
+    background-color: rgba(0, 0, 0, .7);
+    z-index: 999;
+}

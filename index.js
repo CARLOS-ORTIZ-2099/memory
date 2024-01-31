@@ -5,11 +5,12 @@ const btnCompetition = document.querySelector('.btn-competition')
 const  btnCompetitionCancel = document.querySelector('.btn-competition-cancel')
 const btnWinner = document.querySelector('.btn-winner')
 const btnPlay = document.querySelector('.btn-play')
+const capa = document.querySelector('.capa')
 btnCompetitionCancel.disabled = true
 
-const peers = []
-const acc = []
-const dataPlayers = []
+let peers = []
+let acc = []
+let dataPlayers = []
 let cards
 let TiempoDeJuego = 0;
 let intervalo;
@@ -40,7 +41,7 @@ function render() {
         })
 }
 
-
+// quinto a ejecutar
 function eventCard(e, index) {
     if(peers.some((ele) => ele.index == index) || acc.some((ele) => ele.index === index)){
         return
@@ -96,14 +97,13 @@ function eventReset(){
 btnCompetition.addEventListener('click', (e) => {
     answer = parseFloat(prompt('cuantos competiran? minimo 2 maximo 10'))
     console.log(answer);
-    while(answer < 2 || answer > 10){
+    while(isNaN(answer) || answer < 2 || answer > 10 ){
       answer =  parseFloat( prompt('elige un numero permitido'))
     }
     btnPlay.classList.remove('hidden-btn')
     btnPlay.textContent =  'play'
     btnCompetition.disabled = true
     btnCompetitionCancel.disabled = false
-    btnWinner.classList.add('hidden-btn')
 })
 
 // tercero a ejecutar
@@ -123,6 +123,7 @@ btnPlay.addEventListener('click', (e) => {
         tiempoContainer.style.color = "cyan";
       }, 1000);
       btnPlay.classList.add('hidden-btn')
+      deleteCapa('capa', 'newCapa')
 })
 
 function result() {
@@ -130,7 +131,6 @@ function result() {
     btnPlay.classList.add('hidden-btn')
     btnWinner.classList.remove('hidden-btn')
     btnWinner.addEventListener('click', winner)
-    /* btnCompetition.disabled = false */
     btnCompetitionCancel.disabled = true
 }
 
@@ -153,6 +153,27 @@ function winner() {
     btnWinner.classList.add('hidden-btn')
     btnCompetition.disabled = false
     dataPlayers.splice(0, dataPlayers.length)
+    deleteCapa('newCapa', 'capa')
 }
 
+btnCompetitionCancel.addEventListener('click',(e) => {
+    render()
+    clearInterval(intervalo)
+    TiempoDeJuego = 0
+    tiempoContainer.innerHTML = ''
+    btnCompetitionCancel.disabled = true
+    btnCompetition.disabled = false
+    peers = []
+    acc = []
+    dataPlayers = []
+    deleteCapa('newCapa', 'capa')
+})
 
+// cuarto a ejecutar
+// eliminamos la capa
+function deleteCapa(currentValue, newvalue) {
+    if(capa.classList.contains(currentValue)){
+        capa.classList.remove(currentValue)
+        capa.classList.add(newvalue)
+    }
+}
