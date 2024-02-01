@@ -12,7 +12,7 @@ let peers = []
 let acc = []
 let dataPlayers = []
 let cards
-let TiempoDeJuego = 0;
+let tiempoDeJuego = 0;
 let intervalo;
 let answer
 
@@ -41,6 +41,51 @@ function render() {
         })
 }
 
+// segundo a ejecutar
+btnCompetition.addEventListener('click', (e) => {
+    answer = parseFloat(prompt('cuantos competiran? minimo 2 maximo 10'))
+    console.log(answer);
+    while(isNaN(answer) || answer < 2 || answer > 10 ){
+      answer =  parseFloat( prompt('elige un numero permitido'))
+    }
+    btnPlay.classList.remove('hidden-btn')
+    btnPlay.textContent =  'play'
+    btnCompetition.disabled = true
+    btnCompetitionCancel.disabled = false
+})
+
+
+// tercero a ejecutar
+btnPlay.addEventListener('click', (e) => {
+    console.log('entro');
+    intervalo = setInterval(() => {
+        tiempoDeJuego++;
+  
+        const horas = Math.floor(tiempoDeJuego / 3600);
+  
+        const minuto = Math.floor((tiempoDeJuego / 60) % 60);
+  
+        const segundos = Math.floor(tiempoDeJuego % 60);
+  
+        tiempoContainer.textContent = `${horas}H ${minuto}M ${segundos}S`;
+        /* tiempoContainer.style.fontSize = "2em";
+        tiempoContainer.style.color = "cyan"; */
+    }, 1000);
+      btnPlay.classList.add('hidden-btn')
+      deleteCapa('capa', 'newCapa')
+})
+
+
+// cuarto a ejecutar
+// eliminamos la capa
+function deleteCapa(currentValue, newvalue) {
+    if(capa.classList.contains(currentValue)){
+        capa.classList.remove(currentValue)
+        capa.classList.add(newvalue)
+    }
+}
+
+
 // quinto a ejecutar
 function eventCard(e, index) {
     if(peers.some((ele) => ele.index == index) || acc.some((ele) => ele.index === index)){
@@ -60,6 +105,7 @@ function eventCard(e, index) {
     }
 }
 
+// sexto a ejecutar
 function test() {
     if(peers[0].id == peers[1].id ){
        // alert('son iguales')
@@ -77,14 +123,20 @@ function test() {
 
 }
 
+
+
+// septimo a ejecutar
 function eventReset(){
     alert('has acabado el juego')
     clearInterval(intervalo)
     btnPlay.classList.remove('hidden-btn')
     dataPlayers.length < answer ? btnPlay.textContent = 'next player' : 'play'
-    dataPlayers.push({id:dataPlayers.length+1, time :TiempoDeJuego })
-    TiempoDeJuego = 0
-    btnPlay.addEventListener('click', render)
+    dataPlayers.push({id:dataPlayers.length+1, time :tiempoDeJuego })
+    tiempoDeJuego = 0
+    console.log('entro a reset');
+     // Eliminar el manejador de eventos anterior antes de agregar uno nuevo
+     btnPlay.removeEventListener('click', render);
+     btnPlay.addEventListener('click', render);
    
 
     console.log(dataPlayers);
@@ -93,39 +145,7 @@ function eventReset(){
     }
 }
 
-// segundo a ejecutar
-btnCompetition.addEventListener('click', (e) => {
-    answer = parseFloat(prompt('cuantos competiran? minimo 2 maximo 10'))
-    console.log(answer);
-    while(isNaN(answer) || answer < 2 || answer > 10 ){
-      answer =  parseFloat( prompt('elige un numero permitido'))
-    }
-    btnPlay.classList.remove('hidden-btn')
-    btnPlay.textContent =  'play'
-    btnCompetition.disabled = true
-    btnCompetitionCancel.disabled = false
-})
-
-// tercero a ejecutar
-btnPlay.addEventListener('click', (e) => {
-    console.log('entro');
-    intervalo = setInterval(() => {
-        TiempoDeJuego++;
-  
-        const horas = Math.floor(TiempoDeJuego / 3600);
-  
-        const minuto = Math.floor((TiempoDeJuego / 60) % 60);
-  
-        const segundos = Math.floor(TiempoDeJuego % 60);
-  
-        tiempoContainer.textContent = `${horas}H ${minuto}M ${segundos}S`;
-        tiempoContainer.style.fontSize = "2em";
-        tiempoContainer.style.color = "cyan";
-      }, 1000);
-      btnPlay.classList.add('hidden-btn')
-      deleteCapa('capa', 'newCapa')
-})
-
+// octavo a ejecutar
 function result() {
     alert('ha acabado')
     btnPlay.classList.add('hidden-btn')
@@ -134,6 +154,7 @@ function result() {
     btnCompetitionCancel.disabled = true
 }
 
+// noveno a ejecutar
 
 function winner() {
     // determinando el ganador mediante selectionSort
@@ -159,7 +180,7 @@ function winner() {
 btnCompetitionCancel.addEventListener('click',(e) => {
     render()
     clearInterval(intervalo)
-    TiempoDeJuego = 0
+    tiempoDeJuego = 0
     tiempoContainer.innerHTML = ''
     btnCompetitionCancel.disabled = true
     btnCompetition.disabled = false
@@ -169,11 +190,3 @@ btnCompetitionCancel.addEventListener('click',(e) => {
     deleteCapa('newCapa', 'capa')
 })
 
-// cuarto a ejecutar
-// eliminamos la capa
-function deleteCapa(currentValue, newvalue) {
-    if(capa.classList.contains(currentValue)){
-        capa.classList.remove(currentValue)
-        capa.classList.add(newvalue)
-    }
-}

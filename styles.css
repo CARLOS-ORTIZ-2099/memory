@@ -1,16 +1,41 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 img{
-    width: 200px;
+
+   /*  width: 150px;
+    height: 150px; */
+    height: 100%;
+    width: 100%;
 }
 
 .container-game{
     display: grid;
-    grid-template-columns: repeat(3, minmax(200px, 2fr));
+    grid-template-columns: repeat(3, minmax(150px, 250px));
     gap: 1rem;
+    margin: 0 auto;
+    justify-content: center;
 }
 
 .card {
-    border: solid blue 1px;
+    border: solid rgb(126, 126, 153) 1px;
+    box-shadow: 10px 10px 5px rgba(0, 0, 0, .7);
 }
+
+.tiempo-container{
+    border: solid orange 2px;
+    text-align: center;
+    font-weight: bolder;
+    padding: 2rem;
+    color: rgb(243, 154, 106);
+    font-weight: bolder;
+    font-size: 2em;
+    margin-bottom: 2rem;
+}
+
 .hidden img{
     visibility: hidden;
 }
@@ -25,12 +50,42 @@ img{
     position: absolute;
     background-color: rgba(0, 0, 0, .7);
     z-index: 999;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }
 .newCapa {
     width: 100%;
-    
     bottom: 0;
     position: absolute;
     background-color: rgba(0, 0, 0, .7);
     z-index: 999;
+    display: flex;
+    justify-content: space-around;
+}
+
+button{
+    padding: 1rem;
+    border-radius: 5px;
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+.btn-competition{
+    background-color: rgb(44, 31, 230);
+    color: aliceblue;
+}
+.btn-competition-cancel{
+    background-color: rgb(230, 50, 122);
+    color: aliceblue;
+}
+
+.btn-play{
+    background-color: rgb(31, 138, 192);
+    color: aliceblue;
+}
+.btn-winner{
+    background-color: rgb(181, 157, 24);
+    color: aliceblue;
 }
